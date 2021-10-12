@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using UnityEngine;
 
 [Serializable]
 public class CharacterStat
@@ -11,7 +12,7 @@ public class CharacterStat
     {
         get
         {
-            if (isDirty || BaseValue != lastbaseValue)
+            if (isDirty || lastbaseValue != BaseValue)
             {
                 lastbaseValue = BaseValue;
                 _value = CalculateFinalValue();
@@ -23,7 +24,7 @@ public class CharacterStat
 
     protected bool isDirty = true;
     protected float _value;
-    protected float lastbaseValue = float.MinValue;
+    protected float lastbaseValue;
 
     protected readonly List<StatModifier> statModifiers;
     public readonly ReadOnlyCollection<StatModifier> StatModifiers;     //Reference to statModifier List
@@ -40,6 +41,7 @@ public class CharacterStat
 
     public virtual void AddModifier(StatModifier mod)
     {
+        
         isDirty = true;
         statModifiers.Add(mod);
         statModifiers.Sort(CompareModifierOrder);
@@ -81,15 +83,17 @@ public class CharacterStat
 
     protected virtual float CalculateFinalValue()
     {
+        
         float finalValue = BaseValue;
         float sumPercentAdd = 0;
 
         for (int i = 0; i < statModifiers.Count; i++)
         {
             StatModifier mod = statModifiers[i];
+
             if (mod.Type == StatModType.Flat)
             {
-                finalValue += statModifiers[i].Value;
+                finalValue += mod.Value;
             }
             else if (mod.Type == StatModType.PercentAdd)
             {
@@ -102,7 +106,7 @@ public class CharacterStat
             }
             else if (mod.Type == StatModType.PercentMult)
             {
-                finalValue *= 1 + mod.Value;
+                finalValue *= 1 + (mod.Value/100);
             }
         }
 
