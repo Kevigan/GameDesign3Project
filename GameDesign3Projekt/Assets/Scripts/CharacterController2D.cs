@@ -6,8 +6,6 @@ using UnityEngine.InputSystem;
 
 public class CharacterController2D : MonoBehaviour
 {
-    
-
     [SerializeField] private int jumpForce = 5;
     [SerializeField] private int speed = 5;
     [SerializeField] private float gravityMultipier = 5f;
@@ -21,6 +19,16 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private LayerMask ceilingLayer;
     [SerializeField] private LayerMask groundLayer;
 
+    [SerializeField] private GameObject inventoryToggle;
+    [SerializeField] private GameObject equipmentPanelToggle;
+    [SerializeField] private GameObject statsTooltipToggle;
+    [SerializeField] private GameObject itemsTooltipToggle;
+
+    [SerializeField] private Inventory inventory;
+
+
+    private IInteractable currentInteractable;
+    private bool justInteracted;
     private Rigidbody2D rigid;
     protected BoxCollider2D col;
 
@@ -45,6 +53,8 @@ public class CharacterController2D : MonoBehaviour
     {
         rigid = GetComponent<Rigidbody2D>();
         col = GetComponent<BoxCollider2D>();
+        HideMouseCursor();
+        inventoryToggle.SetActive(false);
     }
 
     // Update is called once per frame
@@ -105,7 +115,7 @@ public class CharacterController2D : MonoBehaviour
             velocity.y -= 9.81f * Time.fixedDeltaTime * gravityMultipier;
             if (velocity.y < -15f) velocity.y = -15f;
         }
-        else if(velocity.y < 0)
+        else if (velocity.y < 0)
         {
             velocity.y = 0;
         }
@@ -170,6 +180,17 @@ public class CharacterController2D : MonoBehaviour
         return hasHit;
     }
 
+    public void ShowMouseCursor()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+    public void HideMouseCursor()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
     #region Input
     public void Move(InputAction.CallbackContext context)
     {
@@ -182,7 +203,62 @@ public class CharacterController2D : MonoBehaviour
             SetYForce(jumpForce);
         }
     }
+    public void OpenCloseInventory(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            inventoryToggle.SetActive(!inventoryToggle.activeSelf);
+            statsTooltipToggle.SetActive(false);
+            itemsTooltipToggle.SetActive(false);
+            if (inventoryToggle.activeSelf)
+                ShowMouseCursor();
+            else
+            {
+                HideMouseCursor();
+            }
+        }
+    }
+
+    public void ToggleEquipmentPanel(InputAction.CallbackContext context)
+    {
+        if(context.performed && inventoryToggle.activeSelf)
+        {
+             equipmentPanelToggle.SetActive(!equipmentPanelToggle.activeSelf);
+        }
+    }
+    public void ToogleEquipmentButton()
+    {
+        if (inventoryToggle.activeSelf)
+        {
+            equipmentPanelToggle.SetActive(!equipmentPanelToggle.activeSelf);
+        }
+    }
+
+    public void Interact(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if(currentInteractable is GroundItem groundItem)
+            {
+                groundItem.AddItemToInventory(inventory);
+            }
+        }
+        
+    }
     #endregion
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.GetComponent<IInteractable>() is GroundItem groundItem)
+        {
+            currentInteractable = groundItem;
+            //groundItem.AddItemToInventory(inventory);
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        currentInteractable = null;
+    }
 }
 
 public struct CharacterCollision

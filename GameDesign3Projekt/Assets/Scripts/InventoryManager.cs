@@ -11,6 +11,8 @@ public class InventoryManager : MonoBehaviour
     public CharacterStat Intelligence;
     public CharacterStat Vitality;
 
+    private CharacterController2D character;
+
     [SerializeField] private Inventory inventory;
     [SerializeField] private EquipementPanel equipementPanel;
     [SerializeField] StatPanel statPanel;
@@ -117,13 +119,13 @@ public class InventoryManager : MonoBehaviour
             if(draggedSlot is EquipementSlot)
             {
                 if (dragItem != null) dragItem.Unequip(this);
-                if (dropItem != null) dragItem.Equip(this);
+                if (dropItem != null) dropItem.Equip(this);
             }
 
             if(dropItemSlot is EquipementSlot)
             {
                 if (dragItem != null) dragItem.Equip(this);
-                if (dropItem != null) dragItem.Unequip(this);
+                if (dropItem != null) dropItem.Unequip(this);
             }
             statPanel.UpdateStatValues();
 
