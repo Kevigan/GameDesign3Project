@@ -6,7 +6,9 @@ using UnityEngine.InputSystem;
 
 public class CharacterController2D : MonoBehaviour
 {
-    [SerializeField] private int jumpForce = 5;
+    [SerializeField] private float jumpForce = 5;
+    public float JumpForce { get => jumpForce; set { jumpForce = value; } }
+
     [SerializeField] private int speed = 5;
     [SerializeField] private float gravityMultipier = 5f;
 
@@ -26,7 +28,9 @@ public class CharacterController2D : MonoBehaviour
 
     [SerializeField] private Inventory inventory;
 
-
+    private Vector2 cloudVelocity;
+    public Vector2 CloudVelocity { get => cloudVelocity; set { cloudVelocity = value; } }
+    public bool isOnCloud;
     private IInteractable currentInteractable;
     private bool justInteracted;
     private Rigidbody2D rigid;
@@ -68,6 +72,7 @@ public class CharacterController2D : MonoBehaviour
         CalculateXVelocity(moveInput.x);
         CalculateYVelocity();
         ApplyVelocity();
+      // Debug.Log("Velocity: "+velocity);
     }
 
     private void ApplyVelocity()
@@ -81,17 +86,21 @@ public class CharacterController2D : MonoBehaviour
         xForceSet = yForceSet = false;
 
         velocity.y = YVelocityIsActive ? velocity.y : 0f;
-        rigid.MovePosition(rigid.position + (velocity * Time.fixedDeltaTime));
+        rigid.MovePosition(rigid.position + (velocity * Time.fixedDeltaTime) + (cloudVelocity * Time.fixedDeltaTime));
+        Debug.Log(cloudVelocity);
+        Debug.Log(cloudVelocity * Time.fixedDeltaTime);
     }
     public void AddForce(Vector2 value)
     {
         addForce += value;
-
+        
+       // Debug.Log("Value:  " + value);
     }
     public void SetForce(Vector2 value) //F?r Walljump
     {
         setForce = value;
         yForceSet = xForceSet = true;
+        Debug.Log("isOnCloud");
     }
     public void SetXForce(float newXForce)
     {
@@ -115,10 +124,19 @@ public class CharacterController2D : MonoBehaviour
             velocity.y -= 9.81f * Time.fixedDeltaTime * gravityMultipier;
             if (velocity.y < -15f) velocity.y = -15f;
         }
-        else if (velocity.y < 0)
+        else if (velocity.y < 0 || !isOnCloud)
         {
             velocity.y = 0;
         }
+    }
+    public void MovingPassenger()
+    {
+        if (isOnCloud)
+            velocity = cloudVelocity;
+    }
+    public void SetPassengerVelocity(Vector2 moving)
+    {
+        cloudVelocity = moving;
     }
     private void HandleCollision()
     {
@@ -200,6 +218,7 @@ public class CharacterController2D : MonoBehaviour
     {
         if (context.performed)
         {
+            yForceSet = xForceSet = false;
             SetYForce(jumpForce);
         }
     }
@@ -221,9 +240,9 @@ public class CharacterController2D : MonoBehaviour
 
     public void ToggleEquipmentPanel(InputAction.CallbackContext context)
     {
-        if(context.performed && inventoryToggle.activeSelf)
+        if (context.performed && inventoryToggle.activeSelf)
         {
-             equipmentPanelToggle.SetActive(!equipmentPanelToggle.activeSelf);
+            equipmentPanelToggle.SetActive(!equipmentPanelToggle.activeSelf);
         }
     }
     public void ToogleEquipmentButton()
@@ -238,18 +257,18 @@ public class CharacterController2D : MonoBehaviour
     {
         if (context.performed)
         {
-            if(currentInteractable is GroundItem groundItem)
+            if (currentInteractable is GroundItem groundItem)
             {
                 groundItem.AddItemToInventory(inventory);
             }
         }
-        
+
     }
     #endregion
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.GetComponent<IInteractable>() is GroundItem groundItem)
+        if (collision.GetComponent<IInteractable>() is GroundItem groundItem)
         {
             currentInteractable = groundItem;
             //groundItem.AddItemToInventory(inventory);
