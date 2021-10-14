@@ -65,6 +65,8 @@ public class CharacterController2D : MonoBehaviour
     void Update()
     {
         HandleCollision();
+        Debug.Log(isOnCloud);
+
     }
 
     private void FixedUpdate()
@@ -72,7 +74,6 @@ public class CharacterController2D : MonoBehaviour
         CalculateXVelocity(moveInput.x);
         CalculateYVelocity();
         ApplyVelocity();
-      // Debug.Log("Velocity: "+velocity);
     }
 
     private void ApplyVelocity()
@@ -87,20 +88,16 @@ public class CharacterController2D : MonoBehaviour
 
         velocity.y = YVelocityIsActive ? velocity.y : 0f;
         rigid.MovePosition(rigid.position + (velocity * Time.fixedDeltaTime) + (cloudVelocity * Time.fixedDeltaTime));
-        Debug.Log(cloudVelocity);
-        Debug.Log(cloudVelocity * Time.fixedDeltaTime);
     }
     public void AddForce(Vector2 value)
     {
         addForce += value;
         
-       // Debug.Log("Value:  " + value);
     }
     public void SetForce(Vector2 value) //F?r Walljump
     {
         setForce = value;
         yForceSet = xForceSet = true;
-        Debug.Log("isOnCloud");
     }
     public void SetXForce(float newXForce)
     {

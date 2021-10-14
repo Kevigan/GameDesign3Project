@@ -65,6 +65,7 @@ public class Cloud : MonoBehaviour
         if (collision.GetComponent<CharacterController2D>() is CharacterController2D character && charPassengers.Contains(character))
         {
             character.isOnCloud = false;
+            character.CloudVelocity = Vector2.zero;
             foreach (CharacterController2D chars in charPassengers)
             {
                 chars.JumpForce -= addJumpForce;
