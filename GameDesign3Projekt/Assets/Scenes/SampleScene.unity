@@ -2072,7 +2072,7 @@ GameObject:
   - component: {fileID: 379468438}
   - component: {fileID: 379468437}
   m_Layer: 0
-  m_Name: Chest (1)
+  m_Name: sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2178,7 +2178,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 379468436}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.933, y: -0.68, z: 0}
+  m_LocalPosition: {x: 6.34, y: -0.71, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -4390,7 +4390,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.7777778, y: 1}
+    m_SensorSize: {x: 2.1712847, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -4959,7 +4959,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Strength:
-    BaseValue: 5
+    BaseValue: 15
   Agility:
     BaseValue: 5
   Intelligence:
@@ -5322,7 +5322,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1283271366}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.27, y: -0.17, z: 0}
+  m_LocalPosition: {x: 11.02, y: -0.25, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -7170,7 +7170,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -7229,6 +7229,7 @@ MonoBehaviour:
   statsTooltipToggle: {fileID: 1660096292}
   itemsTooltipToggle: {fileID: 1747323251}
   inventory: {fileID: 989938446}
+  inventoryManager: {fileID: 1202453381}
   isOnCloud: 0
 --- !u!114 &1798485623
 MonoBehaviour:

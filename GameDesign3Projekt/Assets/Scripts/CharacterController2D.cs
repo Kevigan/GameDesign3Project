@@ -27,12 +27,12 @@ public class CharacterController2D : MonoBehaviour
     [SerializeField] private GameObject itemsTooltipToggle;
 
     [SerializeField] private Inventory inventory;
+    [SerializeField] private InventoryManager inventoryManager;
 
     private Vector2 cloudVelocity;
     public Vector2 CloudVelocity { get => cloudVelocity; set { cloudVelocity = value; } }
     public bool isOnCloud;
     private IInteractable currentInteractable;
-    private bool justInteracted;
     private Rigidbody2D rigid;
     protected BoxCollider2D col;
 
@@ -216,7 +216,8 @@ public class CharacterController2D : MonoBehaviour
         if (context.performed)
         {
             yForceSet = xForceSet = false;
-            SetYForce(jumpForce);
+            SetYForce(inventoryManager.Strength.Value);
+            Debug.Log(inventoryManager.Strength.Value);
         }
     }
     public void OpenCloseInventory(InputAction.CallbackContext context)
