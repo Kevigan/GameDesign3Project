@@ -9,7 +9,7 @@ public class GroundItem : MonoBehaviour, IInteractable
     
     public void AddItemToInventory(Inventory inventory)
     {
-        inventory.AddItem(item);
+        inventory.AddItem(item.GetCopy());
         Destroy(gameObject);
     }
 }

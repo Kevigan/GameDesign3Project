@@ -126,15 +126,7 @@ public class CharacterController2D : MonoBehaviour
             velocity.y = 0;
         }
     }
-    public void MovingPassenger()
-    {
-        if (isOnCloud)
-            velocity = cloudVelocity;
-    }
-    public void SetPassengerVelocity(Vector2 moving)
-    {
-        cloudVelocity = moving;
-    }
+    
     private void HandleCollision()
     {
         CheckGrounded();

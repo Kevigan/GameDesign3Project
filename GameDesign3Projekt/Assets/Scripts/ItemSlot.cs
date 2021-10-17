@@ -6,69 +6,18 @@ using UnityEngine.EventSystems;
 using System;
 using UnityEngine.InputSystem;
 
-public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler, IDropHandler
+public class ItemSlot : BaseItemSlot, IDragHandler, IBeginDragHandler, IEndDragHandler, IDropHandler
 {
-    [SerializeField] private Image Image;
+    public event Action<BaseItemSlot> OnBeginDragEvent;
+    public event Action<BaseItemSlot> OnEndDragEvent;
+    public event Action<BaseItemSlot> OnDropEvent;
+    public event Action<BaseItemSlot> OnDragEvent;
 
-    public event Action<ItemSlot> OnRightClickEvent;
-    public event Action<ItemSlot> OnBeginDragEvent;
-    public event Action<ItemSlot> OnEndDragEvent;
-    public event Action<ItemSlot> OnPointerEnterEvent;
-    public event Action<ItemSlot> OnPointerExitEvent;
-    public event Action<ItemSlot> OnDropEvent;
-    public event Action<ItemSlot> OnDragEvent;
+    private Color dragColor = new Color(1, 1, 1, 0.5f);
 
-    private Color normalColor = Color.white;
-    private Color disabledColor = new Color(1, 1, 1, 0);
-
-    private Item _item;
-    public Item Item
-    {
-        get { return _item; }
-        set
-        {
-            _item = value;
-            if (_item == null)
-                Image.color = disabledColor; 
-            else
-            {
-                Image.sprite = _item.Icon;
-                Image.color = normalColor;
-            }
-        }
-    }
-    protected virtual void OnValidate()
-    {
-        if (Image == null)
-            Image = GetComponent<Image>();
-    }
-
-    public virtual bool CanReceiveItem(Item item)
+    public override bool CanReceiveItem(Item item)
     {
         return true;
-    }
-
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (eventData != null && eventData.button == PointerEventData.InputButton.Right)
-        {
-            if (OnRightClickEvent != null)
-            {
-                OnRightClickEvent(this);
-            }
-        }
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if (OnPointerEnterEvent != null)
-            OnPointerEnterEvent(this);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (OnPointerExitEvent != null)
-            OnPointerExitEvent(this);
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -79,12 +28,18 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (Item != null)
+            image.color = dragColor;
+
         if (OnBeginDragEvent != null)
             OnBeginDragEvent(this);
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        if (Item != null)
+            image.color = normalColor;
+
         if (OnEndDragEvent != null)
             OnEndDragEvent(this);
     }

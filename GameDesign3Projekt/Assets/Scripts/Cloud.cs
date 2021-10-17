@@ -14,7 +14,6 @@ public class Cloud : MonoBehaviour
 
     private Vector2 moveDelta;
 
-    private bool inTrigger = false;
 
     private void Start()
     {
@@ -51,7 +50,6 @@ public class Cloud : MonoBehaviour
             character.isOnCloud = true;
 
             charPassengers.Add(character);
-            inTrigger = true;
 
             foreach (CharacterController2D chars in charPassengers)
             {
@@ -72,7 +70,6 @@ public class Cloud : MonoBehaviour
             }
 
             charPassengers.Remove(character);
-            inTrigger = false;
         }
     }
 }
