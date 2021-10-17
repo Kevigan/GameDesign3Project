@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: f19127a09ee4b7947aa90b3698edaef1
   ItemName: GoldCoin
-  MaximumStacks: 10
+  MaximumStacks: 3
   Icon: {fileID: 21300000, guid: 05983802abc75cf489b6c2d69db1ffad, type: 3}

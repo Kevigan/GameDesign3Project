@@ -16,6 +16,7 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] private Inventory inventory;
     [SerializeField] private EquipementPanel equipementPanel;
+    [SerializeField] private CraftingWindow craftingWindow;
     [SerializeField] StatPanel statPanel;
     [SerializeField] ItemTooltip itemTooltip;
     [SerializeField] Image draggableItem;
@@ -28,8 +29,11 @@ public class InventoryManager : MonoBehaviour
             itemTooltip = FindObjectOfType<ItemTooltip>();
     }
 
-    private void Awake()
+    private void Start()
     {
+        //if (itemTooltip == null)
+        //    itemTooltip = FindObjectOfType<ItemTooltip>();
+
         statPanel.SetStats(Strength, Agility, Intelligence, Vitality);
         statPanel.UpdateStatValues();
 
@@ -40,9 +44,11 @@ public class InventoryManager : MonoBehaviour
         //Pointer Enter
         inventory.OnPointerEnterEvent += ShowTooltip;
         equipementPanel.OnPointerEnterEvent += ShowTooltip;
+        craftingWindow.OnPointerEnterEvent += ShowTooltip;
         //Pointer Exit
         inventory.OnPointerExitEvent += HideTooltip;
         equipementPanel.OnPointerExitEvent += HideTooltip;
+        craftingWindow.OnPointerExitEvent += HideTooltip;
         //Begin Drag
         inventory.OnBeginDragEvent += BeginDrag;
         equipementPanel.OnBeginDragEvent += BeginDrag;
@@ -115,39 +121,52 @@ public class InventoryManager : MonoBehaviour
     {
         if (dragItemSlot == null) return;
 
-        if (dragItemSlot)
+        if (dropItemSlot.CanAddStack(dragItemSlot.Item))
         {
-
+            AddStacks(dropItemSlot);
         }
         else if (dropItemSlot.CanReceiveItem(dragItemSlot.Item) && dragItemSlot.CanReceiveItem(dropItemSlot.Item))
         {
-            EquipableItem dragItem = dragItemSlot.Item as EquipableItem;
-            EquipableItem dropItem = dropItemSlot.Item as EquipableItem;
-
-            if (dragItemSlot is EquipementSlot)
-            {
-                if (dragItem != null) dragItem.Unequip(this);
-                if (dropItem != null) dropItem.Equip(this);
-            }
-
-            if (dropItemSlot is EquipementSlot)
-            {
-                if (dragItem != null) dragItem.Equip(this);
-                if (dropItem != null) dropItem.Unequip(this);
-            }
-            statPanel.UpdateStatValues();
-
-            Item draggedItem = dragItemSlot.Item;
-            int draggedItemAmount = dragItemSlot.Amount;
-
-            dragItemSlot.Item = dropItemSlot.Item;
-            dragItemSlot.Amount = dropItemSlot.Amount;
-
-            dropItemSlot.Item = draggedItem;
-            dropItemSlot.Amount = draggedItemAmount;
+            SwapItems(dropItemSlot);
         }
     }
 
+    private void SwapItems(BaseItemSlot dropItemSlot)
+    {
+        EquipableItem dragItem = dragItemSlot.Item as EquipableItem;
+        EquipableItem dropItem = dropItemSlot.Item as EquipableItem;
+
+        if (dragItemSlot is EquipementSlot)
+        {
+            if (dragItem != null) dragItem.Unequip(this);
+            if (dropItem != null) dropItem.Equip(this);
+        }
+
+        if (dropItemSlot is EquipementSlot)
+        {
+            if (dragItem != null) dragItem.Equip(this);
+            if (dropItem != null) dropItem.Unequip(this);
+        }
+        statPanel.UpdateStatValues();
+
+        Item draggedItem = dragItemSlot.Item;
+        int draggedItemAmount = dragItemSlot.Amount;
+
+        dragItemSlot.Item = dropItemSlot.Item;
+        dragItemSlot.Amount = dropItemSlot.Amount;
+
+        dropItemSlot.Item = draggedItem;
+        dropItemSlot.Amount = draggedItemAmount;
+    }
+
+    private void AddStacks(BaseItemSlot dropItemSlot)
+    {
+        int numAddableStacks = dropItemSlot.Item.MaximumStacks - dropItemSlot.Amount;
+        int stacksToAdd = Mathf.Min(numAddableStacks, dragItemSlot.Amount);
+
+        dropItemSlot.Amount += stacksToAdd;
+        dragItemSlot.Amount -= stacksToAdd;
+    }
 
     public void Equip(EquipableItem item)
     {

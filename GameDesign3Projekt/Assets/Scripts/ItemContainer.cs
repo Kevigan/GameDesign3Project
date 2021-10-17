@@ -9,8 +9,9 @@ public abstract class ItemContainer : MonoBehaviour, IItemContainer
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
-            if (itemSlots[i].Item == null || (itemSlots[i].Item.ID == item.ID && itemSlots[i].Amount < item.MaximumStacks))
+            if (itemSlots[i].Item == null || itemSlots[i].CanAddStack(item))
             {
+                Debug.Log(item);
                 itemSlots[i].Item = item;
                 itemSlots[i].Amount++;
                 return true;
@@ -26,10 +27,7 @@ public abstract class ItemContainer : MonoBehaviour, IItemContainer
             if (itemSlots[i].Item == item)
             {
                 itemSlots[i].Amount--;
-                if (itemSlots[i].Amount == 0)
-                {
-                    itemSlots[i].Item = null;
-                }
+
                 return true;
             }
         }
@@ -41,13 +39,10 @@ public abstract class ItemContainer : MonoBehaviour, IItemContainer
         for (int i = 0; i < itemSlots.Length; i++)
         {
             Item item = itemSlots[i].Item;
-            if (item != null && item.ID == item.ID)
+            if (item != null && item.ID == itemID)
             {
                 itemSlots[i].Amount--;
-                if (itemSlots[i].Amount == 0)
-                {
-                    itemSlots[i].Item = null;
-                }
+                Debug.Log(item.name);
                 return item;
             }
         }
@@ -85,7 +80,8 @@ public abstract class ItemContainer : MonoBehaviour, IItemContainer
         int number = 0;
         for (int i = 0; i < itemSlots.Length; i++)
         {
-            if (itemSlots[i].Item.ID == itemId)
+            Item item = itemSlots[i].Item;
+            if (item != null && item.ID == itemId)
             {
                 number++;
             }

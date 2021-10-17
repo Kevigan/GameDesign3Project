@@ -348,7 +348,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5925527354414417911}
         m_TargetAssemblyTypeName: CraftingRecipeUI, Assembly-CSharp
         m_MethodName: OnCraftButtonClick
         m_Mode: 1
@@ -461,6 +461,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1104424089264491132}
   - component: {fileID: 1104424089264491135}
+  - component: {fileID: 5925527354414417911}
   m_Layer: 5
   m_Name: Crafting Recipe UI
   m_TagString: Untagged
@@ -519,6 +520,25 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &5925527354414417911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1104424089264491133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5dcdd39a18e412429a7db4000b9c80e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowParent: {fileID: 1104424089492775071}
+  itemsSlots:
+  - {fileID: 6896344093995468190}
+  - {fileID: 4554498431977540349}
+  - {fileID: 8804797852950228468}
+  - {fileID: 7544666212838397865}
+  ItemContainer: {fileID: 0}
 --- !u!1 &1104424089492775068
 GameObject:
   m_ObjectHideFlags: 0

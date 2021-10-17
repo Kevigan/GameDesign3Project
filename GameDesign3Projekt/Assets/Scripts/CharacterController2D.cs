@@ -65,8 +65,6 @@ public class CharacterController2D : MonoBehaviour
     void Update()
     {
         HandleCollision();
-        Debug.Log(isOnCloud);
-
     }
 
     private void FixedUpdate()

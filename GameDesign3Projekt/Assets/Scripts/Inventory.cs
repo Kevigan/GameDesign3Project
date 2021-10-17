@@ -38,6 +38,7 @@ public class Inventory : ItemContainer
     {
         if (itemsParent != null)
             itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
+
         SetStartingItems();
     }
 
