@@ -1,7 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
+public enum cloudColor
+{
+    red,
+    blue,
+    green,
+    yellow,
+    white,
+    black
+}
 public class Cloud : MonoBehaviour
 {
     [SerializeField] private float speed = 5f;
@@ -9,22 +19,33 @@ public class Cloud : MonoBehaviour
     [SerializeField] private bool moveVertical;
     [SerializeField] private bool moveHorizontal;
 
-    List<Transform> passengers = new List<Transform>();
+    [SerializeField] private cloudColor color;
+    [SerializeField] private int jumpAmount = 1;
+
+    [SerializeField] private Text text;
+
     List<CharacterController2D> charPassengers = new List<CharacterController2D>();
 
     private Vector2 moveDelta;
+    private SpriteRenderer spriteRenderer;
 
+    private void OnValidate()
+    {
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        UpdateColor();
+    }
 
     private void Start()
     {
-       if(moveHorizontal) moveDelta = Vector2.right;
-       if(moveVertical) moveDelta = Vector2.up;
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        if (moveHorizontal) moveDelta = Vector2.right;
+        if (moveVertical) moveDelta = Vector2.up;
+        UpdateText();
     }
 
     private void FixedUpdate()
     {
         Move();
-        //Debug.Log(moveDelta);
 
         foreach (CharacterController2D chars in charPassengers)
         {
@@ -32,7 +53,53 @@ public class Cloud : MonoBehaviour
             chars.CloudVelocity = moveDelta * speed;
         }
     }
+    //green,
+    //yellow,
+    //white,
+    //black
+    private void UpdateColor()
+    {
+        switch (color)
+        {
+            case cloudColor.red:
+                spriteRenderer.color = new Color(1, 0, 0, 1);
+                break;
+            case cloudColor.blue:
+                spriteRenderer.color = new Color(0, 0, 1, 1);
+                break;
+            case cloudColor.green:
+                spriteRenderer.color = new Color(0, 1, 0, 1);
+                break;
+            case cloudColor.yellow:
+                spriteRenderer.color = new Color(1, 0.92f, 0.016f, 1);
+                break;
+            case cloudColor.white:
+                spriteRenderer.color = new Color(1, 1, 1, 1);
+                break;
+            case cloudColor.black:
+                spriteRenderer.color = new Color(0, 0, 0, 1);
+                break;
+        }
+    }
 
+    private void UpdateText()
+    {
+        text.text = jumpAmount.ToString();
+    }
+
+    private void CheckJumps()
+    {
+        if (jumpAmount <= 0)
+        {
+            //BoxCollider2D[] box = GetComponents<BoxCollider2D>();
+            //foreach (BoxCollider2D col in box)
+            //{
+            //     col.enabled = false;
+            //}
+            //spriteRenderer.enabled = false;
+            Destroy(gameObject);
+        }
+    }
 
     private void Move()
     {
@@ -62,6 +129,9 @@ public class Cloud : MonoBehaviour
     {
         if (collision.GetComponent<CharacterController2D>() is CharacterController2D character && charPassengers.Contains(character))
         {
+            jumpAmount--;
+            UpdateText();
+            CheckJumps();
             character.isOnCloud = false;
             character.CloudVelocity = Vector2.zero;
             foreach (CharacterController2D chars in charPassengers)

@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class CharacterController2D : MonoBehaviour
 {
+    [SerializeField] private int maxJumps = 1;
+    private int currentJumpsLeft;
     [SerializeField] private float jumpForce = 5;
     public float JumpForce { get => jumpForce; set { jumpForce = value; } }
 
@@ -28,6 +31,11 @@ public class CharacterController2D : MonoBehaviour
 
     [SerializeField] private Inventory inventory;
     [SerializeField] private InventoryManager inventoryManager;
+
+    [Header("Höhenmeter Einstellungen")]
+    [SerializeField] private Scrollbar höhenMeter;
+    [SerializeField] private Transform startPoint;
+    [SerializeField] private Transform endPoint;
 
     private Vector2 cloudVelocity;
     public Vector2 CloudVelocity { get => cloudVelocity; set { cloudVelocity = value; } }
@@ -59,12 +67,15 @@ public class CharacterController2D : MonoBehaviour
         col = GetComponent<BoxCollider2D>();
         HideMouseCursor();
         inventoryToggle.SetActive(false);
+        currentJumpsLeft = maxJumps;
+        collision.OnLandedEvent += OnGroundLanded;
     }
 
     // Update is called once per frame
     void Update()
     {
         HandleCollision();
+        HandleHöhenmeter();
     }
 
     private void FixedUpdate()
@@ -72,6 +83,16 @@ public class CharacterController2D : MonoBehaviour
         CalculateXVelocity(moveInput.x);
         CalculateYVelocity();
         ApplyVelocity();
+    }
+
+    private void OnGroundLanded()
+    {
+        currentJumpsLeft = maxJumps;
+    }
+
+    private void HandleHöhenmeter()
+    {
+        höhenMeter.value = ((transform.position.y- startPoint.transform.position.y) /(endPoint.transform.position.y - startPoint.transform.position.y));
     }
 
     private void ApplyVelocity()
@@ -203,11 +224,11 @@ public class CharacterController2D : MonoBehaviour
     }
     public void JumpInput(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && currentJumpsLeft > 0)
         {
             yForceSet = xForceSet = false;
-            SetYForce(inventoryManager.Strength.Value);
-            Debug.Log(inventoryManager.Strength.Value);
+            SetYForce(JumpForce);
+            currentJumpsLeft--;
         }
     }
     public void OpenCloseInventory(InputAction.CallbackContext context)

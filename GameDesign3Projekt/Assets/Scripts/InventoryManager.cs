@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class InventoryManager : MonoBehaviour
 {
+    public int Health = 50;
+
     public CharacterStat Strength;
     public CharacterStat Agility;
     public CharacterStat Intelligence;
@@ -39,8 +41,8 @@ public class InventoryManager : MonoBehaviour
 
         //Setup Events
         //Right Click
-        inventory.OnRightClickEvent += Equip;
-        equipementPanel.OnRightClickEvent += Unequip;
+        inventory.OnRightClickEvent += InventoryRightClick;
+        equipementPanel.OnRightClickEvent += EquipmentPanelRightClick;
         //Pointer Enter
         inventory.OnPointerEnterEvent += ShowTooltip;
         equipementPanel.OnPointerEnterEvent += ShowTooltip;
@@ -64,29 +66,36 @@ public class InventoryManager : MonoBehaviour
     }
 
 
-    private void Equip(BaseItemSlot itemSlot)
+    private void InventoryRightClick(BaseItemSlot itemSlot)
     {
-        EquipableItem equipableItem = itemSlot.Item as EquipableItem;
-        if (equipableItem != null)
+        if(itemSlot.Item is EquipableItem)
         {
-            Equip(equipableItem);
+            Equip((EquipableItem)itemSlot.Item);
+        }else if(itemSlot.Item is UsableItem)
+        {
+            UsableItem usableItem = (UsableItem)itemSlot.Item;
+            usableItem.Use(this);
+
+            if (usableItem.IsConsumable)
+            {
+                inventory.RemoveItem(usableItem);
+                usableItem.Destroy();
+            }
         }
     }
-    private void Unequip(BaseItemSlot itemSlot)
+    private void EquipmentPanelRightClick(BaseItemSlot itemSlot)
     {
-        EquipableItem equipableItem = itemSlot.Item as EquipableItem;
-        if (equipableItem != null)
+        if (itemSlot.Item is EquipableItem)
         {
-            Unequip(equipableItem);
+            Unequip((EquipableItem)itemSlot.Item);
         }
     }
 
     private void ShowTooltip(BaseItemSlot itemSlot)
     {
-        EquipableItem equipableItem = itemSlot.Item as EquipableItem;
-        if (equipableItem != null)
+        if (itemSlot.Item != null)
         {
-            itemTooltip.ShowTooltip(equipableItem);
+            itemTooltip.ShowTooltip(itemSlot.Item);
         }
     }
 

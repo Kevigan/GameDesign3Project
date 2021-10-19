@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using System.Text;
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "Items/Item")]
 public class Item : ScriptableObject
 {
     [SerializeField] private string id;
@@ -12,6 +13,9 @@ public class Item : ScriptableObject
     [Range(1, 999)]
     public int MaximumStacks = 1;
     public Sprite Icon;
+
+    protected static readonly StringBuilder sb = new StringBuilder();
+
 
     private void OnValidate()
     {
@@ -27,5 +31,14 @@ public class Item : ScriptableObject
     public virtual void Destroy()
     {
 
+    }
+
+    public virtual string GetItemType()
+    {
+        return "";
+    }
+    public virtual string GetDescription()
+    {
+        return "";
     }
 }
